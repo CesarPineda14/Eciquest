@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -6,16 +7,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  username: string = '';
-  password: string = '';
 
-  constructor() { }
+  constructor(private router: Router) { }
 
-  login() {
-    // Aquí puedes implementar la lógica de autenticación
-    console.log('Usuario:', this.username);
-    console.log('Contraseña:', this.password);
-    // Por ejemplo, podrías hacer una solicitud HTTP a tu backend para autenticar al usuario
+  redirectToInicio(): void {
+    this.router.navigate(['/inicio']); // Navegar a la ruta de inicio
   }
 }
-
