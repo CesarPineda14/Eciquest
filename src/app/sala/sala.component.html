@@ -1,23 +1,51 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Host | KahootClone</title>
-        <link rel = "stylesheet" href = "sala.component.css">
-        <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Tajawal" rel="stylesheet">
-    </head>
-    <body>
-        <button id = "cancel" onclick = "endGame()">Cancel Game</button>
-        <h2 id = "title">Join this Game using the Game Pin: </h2>
-        <h1 id = "gamePinText"></h1>
-        <textarea style = "width: 75px; height: 25px;" readonly id = 'players'></textarea>
-        <br>
-        <button id = 'start' onclick = "startGame()">Start Game</button>
-        <br>
-        <br>
-        <script src = "../socket.io/socket.io.js"></script>
-        <script src = "../js/libs/jqueryLibrary.js"></script>
-        <script src = "../js/libs//deparam.js"></script>
-        <script src = "../js/host.js"></script>
-    </body>
-</html>
+<!-- <button (click)="ajustarRuleta()">formato</button> -->
+
+<button (click)="sorteo()" [ngClass]="{ 'inactive': !botonActivo }">sorteo</button>
+<div id="timer" [ngClass]="{ 'invisible': !showformat}">
+    <p>{{ countdown }}</p>
+  </div>
+<div id="total">
+    <div id="container">
+        <div id="ganador">
+            <div id="cartelGanador">
+                <p id="ganadorTexto">"Click en 'sorteo' para iniciar"</p>
+
+            </div>
+
+        </div>
+        <div #ruleta id="ruleta">
+
+        </div>
+
+    </div>
+
+    <div id="formatoPreguntas" [ngClass]="{ 'invisible': !showformat}">
+        <h1>{{ preguntaGlobal }}</h1>
+        <label class="opcionsel" 
+               [class.disabled]="areLabelsDisabled" 
+               [class.selected]="selectedOption === 0"
+               (click)="selectOption(0)">
+          {{ opcionRespuesta[0] }}
+        </label> <br>
+        <label class="opcionsel" 
+               [class.disabled]="areLabelsDisabled" 
+               [class.selected]="selectedOption === 1"
+               (click)="selectOption(1)">
+          {{ opcionRespuesta[1] }}
+        </label> <br>
+        <label class="opcionsel" 
+               [class.disabled]="areLabelsDisabled" 
+               [class.selected]="selectedOption === 2"
+               (click)="selectOption(2)">
+          {{ opcionRespuesta[2] }}
+        </label> <br>
+        <label class="opcionsel" 
+               [class.disabled]="areLabelsDisabled" 
+               [class.selected]="selectedOption === 3"
+               (click)="selectOption(3)">
+          {{ opcionRespuesta[3] }}
+        </label> <br>
+      </div>
+      
+
+</div>
