@@ -3,6 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { preguntasDic } from './preguntas';
 import { take } from 'rxjs/operators';
 import { interval } from 'rxjs';
+import { io } from 'socket.io-client';
 
 @Component({
   selector: 'app-sala',
@@ -12,11 +13,13 @@ import { interval } from 'rxjs';
 })
 export class SalaComponent implements OnInit, AfterViewInit {
   @ViewChild('ruleta') ruletaElementRef!: ElementRef;
+  private socket;
   private spinSound = new Audio('/assets/audio/RULETA.mp3');
   private stopSound = new Audio('/assets/audio/stopWheel.mp3');
   private clock = new Audio('/assets/audio/temporizador.mp3');
   private clockend = new Audio('/assets/audio/temporizadorFin.mp3');
-  constructor(private sanitizer: DomSanitizer) { }
+  constructor(private sanitizer: DomSanitizer)
+              { this.socket = io('http://localhost:4000');}
   root = document.documentElement
   animacionCarga:any
   sortenado = false
@@ -53,13 +56,21 @@ export class SalaComponent implements OnInit, AfterViewInit {
   }
 
   validarRespuesta(){
-    if (this.opcionseleccionada == this.repuestaEsperada){
-      console.log("!ganaste¡")
-      alert("!Respuesta correcta¡")
-    }else{
-      console.log("!perdiste¡")
-      alert("!Respuesta incorrecta¡")
-    }
+    // if (this.opcionseleccionada == this.repuestaEsperada){
+    //   alert("!Respuesta correcta¡")
+    // }else{
+    //   console.log("!perdiste¡")
+    //   alert("!Respuesta incorrecta¡")
+    // }
+    this.socket.emit('answer', this.opcionseleccionada);
+    this.socket.on('correct_answer', (data) => {
+      
+      console.log("!Respuesta correcta¡","puntaje: ", data.score)
+    });
+    this.socket.on('incorrect_answer', (data) => {
+      console.log("!Respuesta incorrecta¡","puntaje: ", data.score)
+    });
+
 
   }
 
@@ -71,12 +82,12 @@ export class SalaComponent implements OnInit, AfterViewInit {
   }
 
   preguntasSeleccion(categoria:string){
-    let preguntaDiccionario = preguntasDic.filter(porta => porta.categoria == categoria)
-    // this.preguntaGlobal = preguntaDiccionario?[Math.floor(Math.random() * preguntaDiccionario.length)].
-    let preguntaRandom = preguntaDiccionario[Math.floor(Math.random() * preguntaDiccionario.length)];
-    this.preguntaGlobal = preguntaRandom.pregunta
-    this.opcionRespuesta = preguntaRandom?.respuestas
-    this.repuestaEsperada = preguntaRandom.correcta
+    this.socket.emit('requestQuestions', "logica");
+    this.socket.on('pregunta', (data) => {
+      this.preguntaGlobal = data.pregunta
+      this.opcionRespuesta = data.respuestas
+      this.repuestaEsperada =data.correcta
+    });
   }
 
 
@@ -214,6 +225,13 @@ export class SalaComponent implements OnInit, AfterViewInit {
   }
 
   sorteo() {
+
+
+
+
+
+
+
     this.spinSound.play();
     this.selectedOption = -1;
     this.showformat = false
@@ -273,6 +291,23 @@ export class SalaComponent implements OnInit, AfterViewInit {
     }
     return 0;
   }
+
+
+
+  connectToGame() {
+    // this.socket.on('question', (question) => {
+    //   console.log(question);
+    // });
+    
+    this.socket.emit('requestQuestions', "logica");
+    this.socket.on('pregunta', (data) => {
+      console.log("Pregunta recibida:", data.pregunta);
+      console.log("Respuestas posibles:", data.respuestas);
+      console.log("Respuesta correcta:", data.correcta); 
+    });
+  }
+
+
 
 
 

@@ -11,7 +11,6 @@ import { NewEciQuestComponent } from './new-eci-quest/new-eci-quest.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { SalaComponent } from './sala/sala.component';
 
-
 const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'inicio', component: InicioComponent },
