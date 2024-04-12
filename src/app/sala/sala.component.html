@@ -1,6 +1,9 @@
 <!-- <button (click)="ajustarRuleta()">formato</button> -->
 
-<button (click)="sorteo()" [ngClass]="{ 'inactive': !botonActivo }">sorteo</button>
+<button (click)="connectToGame()" [ngClass]="{ 'inactive': !botonActivo }">sorteo</button><br>
+<button (click)="ingresarSala()" >sala</button>
+<input type="text" [(ngModel)]="idSala"><br>
+puntaje<input type="text" [(ngModel)]="puntaje">
 <div id="timer" [ngClass]="{ 'invisible': !showformat}">
     <p>{{ countdown }}</p>
   </div>

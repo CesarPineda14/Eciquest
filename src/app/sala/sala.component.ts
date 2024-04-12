@@ -1,6 +1,5 @@
 import { Component, ViewChild, ElementRef, ViewEncapsulation, OnInit, AfterViewInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { preguntasDic } from './preguntas';
 import { take } from 'rxjs/operators';
 import { interval } from 'rxjs';
 import { io } from 'socket.io-client';
@@ -33,6 +32,10 @@ export class SalaComponent implements OnInit, AfterViewInit {
   showformat = false
   repuestaEsperada=""
   opcionseleccionada = ""
+  idSala = 0
+  puntaje = 0
+  usuarioDb = "prueba"
+  passwordDb = "prueba"
   
   colorList = [
     "#126253", // a dark shade of blue
@@ -47,12 +50,14 @@ export class SalaComponent implements OnInit, AfterViewInit {
     "#800000", // maroon
     "#808000", // olive
   ];
-  // conceptos = ["bases de datos", "logica", "sistemas"]
-  conceptos = ["bases de datos", "logica"]
+  conceptos = ["bases de datos", "logica", "sistemas"]
+  // conceptos = ["bases de datos", "logica"]
 
   ngOnInit() {
     this.ajustarRuleta();
-
+    this.socket.on('realizarSorteo', (data) => {
+      this.sorteo(data.numero);
+  });
   }
 
   validarRespuesta(){
@@ -62,14 +67,19 @@ export class SalaComponent implements OnInit, AfterViewInit {
     //   console.log("!perdiste¡")
     //   alert("!Respuesta incorrecta¡")
     // }
-    this.socket.emit('answer', this.opcionseleccionada);
-    this.socket.on('correct_answer', (data) => {
-      
-      console.log("!Respuesta correcta¡","puntaje: ", data.score)
-    });
-    this.socket.on('incorrect_answer', (data) => {
-      console.log("!Respuesta incorrecta¡","puntaje: ", data.score)
-    });
+    this.socket.off('answerResult');
+    this.socket.emit('answer', {roomId: this.idSala, answer:this.opcionseleccionada});
+    this.socket.on('answerResult', (data) => {
+      if (data.isCorrect){
+        console.log("!Respuesta correcta¡")
+        
+      }
+      else{
+        console.log("!perdiste¡")
+      }
+      this.puntaje = data.score
+
+          });
 
 
   }
@@ -82,11 +92,10 @@ export class SalaComponent implements OnInit, AfterViewInit {
   }
 
   preguntasSeleccion(categoria:string){
-    this.socket.emit('requestQuestions', "logica");
-    this.socket.on('pregunta', (data) => {
+    this.socket.emit('requestQuestions', categoria);
+    this.socket.on('newQuestion', (data) => {
       this.preguntaGlobal = data.pregunta
       this.opcionRespuesta = data.respuestas
-      this.repuestaEsperada =data.correcta
     });
   }
 
@@ -108,6 +117,7 @@ export class SalaComponent implements OnInit, AfterViewInit {
       this.spinSound.pause();
       this.spinSound.currentTime = 0;
       this.stopSound.play()
+      this.botonActivo = true
       this.preguntasSeleccion(this.conceptos[winningSegment])
       this.startCountdown()
       this.areLabelsDisabled = false
@@ -143,7 +153,7 @@ export class SalaComponent implements OnInit, AfterViewInit {
   }
   calculateWinningSegment(rotation: number) {
     let degreesPerSegment = 360 / this.conceptos.length;
-    // This will calculate the index of the concept in the array.
+   
     let index = Math.floor(((360 - rotation) % 360) / degreesPerSegment);
     return index;
   }
@@ -224,20 +234,12 @@ export class SalaComponent implements OnInit, AfterViewInit {
     return probabilidad * 360 / 100;
   }
 
-  sorteo() {
-
-
-
-
-
-
-
+  sorteo(ganador:any) {
     this.spinSound.play();
     this.selectedOption = -1;
     this.showformat = false
     this.botonActivo = false
     if (this.sortenado) { return }
-
     let ganadorTexto = document.getElementById("ganadorTexto")
     if (ganadorTexto) { ganadorTexto.textContent = "." }
     this.sortenado = true
@@ -261,13 +263,8 @@ export class SalaComponent implements OnInit, AfterViewInit {
       }
 
     }, 500)
-
-    
     let ruleta = document.getElementById("ruleta")
-    let ganador = Math.random();
-    // console.log(ganador)
-    // console.log("ganador: " +ganador)
-
+    
     ruleta?.classList.toggle("girar", true)
     let duracionGiro = 10 * 360 + (1 - ganador) * 360
     this.root.style.setProperty("--giroRuleta", duracionGiro + "deg")
@@ -295,19 +292,15 @@ export class SalaComponent implements OnInit, AfterViewInit {
 
 
   connectToGame() {
-    // this.socket.on('question', (question) => {
-    //   console.log(question);
-    // });
+
+    this.socket.emit('iniciarSorteo', { roomId: this.idSala });
+
     
-    this.socket.emit('requestQuestions', "logica");
-    this.socket.on('pregunta', (data) => {
-      console.log("Pregunta recibida:", data.pregunta);
-      console.log("Respuestas posibles:", data.respuestas);
-      console.log("Respuesta correcta:", data.correcta); 
-    });
   }
 
-
+  ingresarSala(){
+    this.socket.emit('joinRoom', { roomId: this.idSala });
+  }
 
 
 
