@@ -36,7 +36,7 @@ export class SalaComponent implements OnInit, AfterViewInit {
   puntaje = 0
   usuarioDb = "prueba"
   passwordDb = "prueba"
-  
+
   colorList = [
     "#126253", // a dark shade of blue
     "#FF0000", // red
@@ -50,7 +50,7 @@ export class SalaComponent implements OnInit, AfterViewInit {
     "#800000", // maroon
     "#808000", // olive
   ];
-  conceptos = ["bases de datos", "logica", "sistemas"]
+  conceptos = ["bases de datos", "logica", "sistemas","matematicas","programacion"]
   // conceptos = ["bases de datos", "logica"]
 
   ngOnInit() {
@@ -72,7 +72,9 @@ export class SalaComponent implements OnInit, AfterViewInit {
     this.socket.on('answerResult', (data) => {
       if (data.isCorrect){
         console.log("!Respuesta correcta¡")
-        
+        this.puntaje += 10;
+        console.log(this.puntaje);
+
       }
       else{
         console.log("!perdiste¡")
@@ -153,7 +155,7 @@ export class SalaComponent implements OnInit, AfterViewInit {
   }
   calculateWinningSegment(rotation: number) {
     let degreesPerSegment = 360 / this.conceptos.length;
-   
+
     let index = Math.floor(((360 - rotation) % 360) / degreesPerSegment);
     return index;
   }
@@ -264,7 +266,7 @@ export class SalaComponent implements OnInit, AfterViewInit {
 
     }, 500)
     let ruleta = document.getElementById("ruleta")
-    
+
     ruleta?.classList.toggle("girar", true)
     let duracionGiro = 10 * 360 + (1 - ganador) * 360
     this.root.style.setProperty("--giroRuleta", duracionGiro + "deg")
@@ -295,7 +297,7 @@ export class SalaComponent implements OnInit, AfterViewInit {
 
     this.socket.emit('iniciarSorteo', { roomId: this.idSala });
 
-    
+
   }
 
   ingresarSala(){

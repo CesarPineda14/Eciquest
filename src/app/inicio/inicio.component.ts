@@ -8,8 +8,17 @@ import { Router } from '@angular/router';
 })
 export class InicioComponent {
   constructor(private router: Router) { }
-  redirectTosala(){
-    this.router.navigate(['/SalaComponent'])
+
+  redirectTosala() {
+    this.router.navigate(['/SalaComponent']);
   }
 
+  redirectToPerfil() {
+    this.router.navigate(['/perfil']);
+  }
+
+  redirectToCrearSala() {
+    this.router.navigate(['/CrearSala']);
+  }
 }
+

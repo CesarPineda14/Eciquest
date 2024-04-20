@@ -24,31 +24,31 @@ puntaje<input type="text" [(ngModel)]="puntaje">
 
     <div id="formatoPreguntas" [ngClass]="{ 'invisible': !showformat}">
         <h1>{{ preguntaGlobal }}</h1>
-        <label class="opcionsel" 
-               [class.disabled]="areLabelsDisabled" 
+        <label class="opcionsel"
+               [class.disabled]="areLabelsDisabled"
                [class.selected]="selectedOption === 0"
                (click)="selectOption(0)">
           {{ opcionRespuesta[0] }}
         </label> <br>
-        <label class="opcionsel" 
-               [class.disabled]="areLabelsDisabled" 
+        <label class="opcionsel"
+               [class.disabled]="areLabelsDisabled"
                [class.selected]="selectedOption === 1"
                (click)="selectOption(1)">
           {{ opcionRespuesta[1] }}
         </label> <br>
-        <label class="opcionsel" 
-               [class.disabled]="areLabelsDisabled" 
+        <label class="opcionsel"
+               [class.disabled]="areLabelsDisabled"
                [class.selected]="selectedOption === 2"
                (click)="selectOption(2)">
           {{ opcionRespuesta[2] }}
         </label> <br>
-        <label class="opcionsel" 
-               [class.disabled]="areLabelsDisabled" 
+        <label class="opcionsel"
+               [class.disabled]="areLabelsDisabled"
                [class.selected]="selectedOption === 3"
                (click)="selectOption(3)">
           {{ opcionRespuesta[3] }}
         </label> <br>
       </div>
-      
+
 
 </div>

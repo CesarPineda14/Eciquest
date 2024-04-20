@@ -32,7 +32,7 @@
   position: absolute;
   width: var(--escala);
   height: var(--escala);
-  
+
 }
 
 #container{
@@ -102,8 +102,8 @@
 
 
 .opcionsel.disabled {
-  pointer-events: none; 
-  opacity: 0.5; 
+  pointer-events: none;
+  opacity: 0.5;
   cursor: default;
 }
 
@@ -116,3 +116,20 @@ button.inactive{
   cursor: not-allowed;
   pointer-events:none;
 }
+
+body{
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 100px 0 0 0;
+  background-image: linear-gradient(to top,#a42a2a, #a72a2a 20%, #ef0909 40%, #e80f33 50%, #ee0a38 70%, #be9e9e 90%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#E2D7D4", endColorstr="#6B77A1",GradientType=0 );
+  background-size: 200% 200%;
+  animation: movimiento 10s linear infinite alternate;
+  box-sizing: border-box;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
