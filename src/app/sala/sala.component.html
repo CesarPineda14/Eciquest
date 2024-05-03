@@ -1,54 +1,72 @@
-<!-- <button (click)="ajustarRuleta()">formato</button> -->
+<div class="header">
+  <!-- Número de Sala -->
+  <label for="sala">Número de Sala:</label>
+  <span  type="text" id="sala"> {{idSala}}</span>
+  <br>
 
-<button (click)="connectToGame()" [ngClass]="{ 'inactive': !botonActivo }">sorteo</button><br>
-<button (click)="ingresarSala()" >sala</button>
-<input type="text" [(ngModel)]="idSala"><br>
-puntaje<input type="text" [(ngModel)]="puntaje">
+  <!-- Puntaje -->
+  <label for="puntaje">Puntaje:</label>
+  <span id="puntaje">{{ puntaje }}</span>
+</div>
+
+<div class="boton-sorteo">
+  <!-- Botón de Sorteo -->
+  <button (click)="connectToGame()" [ngClass]="{ 'inactive': !botonActivo }">Sorteo</button>
+</div>
+
+<!-- Temporizador -->
 <div id="timer" [ngClass]="{ 'invisible': !showformat}">
-    <p>{{ countdown }}</p>
-  </div>
-<div id="total">
-    <div id="container">
-        <div id="ganador">
-            <div id="cartelGanador">
-                <p id="ganadorTexto">"Click en 'sorteo' para iniciar"</p>
+  <p>{{ countdown }}</p>
+</div>
 
-            </div>
-
-        </div>
-        <div #ruleta id="ruleta">
-
-        </div>
-
+<div id="total" >
+  <div id="container">
+    <!-- Ganador -->
+    <div id="ganador">
+      <div id="cartelGanador">
+        <p id="ganadorTexto">Click en 'Sorteo' para iniciar</p>
+      </div>
     </div>
 
-    <div id="formatoPreguntas" [ngClass]="{ 'invisible': !showformat}">
-        <h1>{{ preguntaGlobal }}</h1>
-        <label class="opcionsel"
-               [class.disabled]="areLabelsDisabled"
-               [class.selected]="selectedOption === 0"
-               (click)="selectOption(0)">
-          {{ opcionRespuesta[0] }}
-        </label> <br>
-        <label class="opcionsel"
-               [class.disabled]="areLabelsDisabled"
-               [class.selected]="selectedOption === 1"
-               (click)="selectOption(1)">
-          {{ opcionRespuesta[1] }}
-        </label> <br>
-        <label class="opcionsel"
-               [class.disabled]="areLabelsDisabled"
-               [class.selected]="selectedOption === 2"
-               (click)="selectOption(2)">
-          {{ opcionRespuesta[2] }}
-        </label> <br>
-        <label class="opcionsel"
-               [class.disabled]="areLabelsDisabled"
-               [class.selected]="selectedOption === 3"
-               (click)="selectOption(3)">
-          {{ opcionRespuesta[3] }}
-        </label> <br>
+    <!-- Rueda -->
+    <div #ruleta id="ruleta"></div>
+  </div>
+
+  <!-- Preguntas y opciones -->
+  <div id="formatoPreguntas" [ngClass]="{ 'invisible': !showformat}">
+    <h1>{{ preguntaGlobal }}</h1>
+    <label class="opcionsel"
+           [class.disabled]="areLabelsDisabled"
+           [class.selected]="selectedOption === 0"
+           (click)="selectOption(0)">
+      {{ opcionRespuesta[0] }}
+    </label><br>
+    <label class="opcionsel"
+           [class.disabled]="areLabelsDisabled"
+           [class.selected]="selectedOption === 1"
+           (click)="selectOption(1)" >
+      {{ opcionRespuesta[1] }}
+    </label><br>
+    <label class="opcionsel"
+           [class.disabled]="areLabelsDisabled"
+           [class.selected]="selectedOption === 2"
+           (click)="selectOption(2)">
+      {{ opcionRespuesta[2] }}
+    </label><br>
+    <label class="opcionsel"
+           [class.disabled]="areLabelsDisabled"
+           [class.selected]="selectedOption === 3"
+           (click)="selectOption(3)">
+      {{ opcionRespuesta[3] }}
+    </label><br>
+  </div>
+
+  <div>
+    <h1>Top 3</h1>
+    <div id="top3">
+      <div *ngFor="let jugador of top3">
+        <p>{{ jugador.nombre}}</p>
+        <p>{{ jugador.score }}</p>
       </div>
-
-
+  </div>
 </div>

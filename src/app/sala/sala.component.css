@@ -13,17 +13,16 @@
 }
 #total{
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   text-align: center;
-
-}
-#opcion{
+  /* espacio entre elementos de 2 pixeles */
+  gap: 30px;
 
 }
 #formatoPreguntas{
   position: relative;
-  top: 70px;
+  /* top: 70px; */
   align-items: center;
 }
 
@@ -38,7 +37,7 @@
 #container{
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   height: 100%;
@@ -121,15 +120,52 @@ body{
   width: 100%;
   height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 100px 0 0 0;
-  background-image: linear-gradient(to top,#a42a2a, #a72a2a 20%, #ef0909 40%, #e80f33 50%, #ee0a38 70%, #be9e9e 90%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#E2D7D4", endColorstr="#6B77A1",GradientType=0 );
-  background-size: 200% 200%;
-  animation: movimiento 10s linear infinite alternate;
-  box-sizing: border-box;
+  /* justify-content: center;
+  align-items: center; */
+  /* padding: 100px 0 0 0; */
+  /* background-image: linear-gradient(to top,#a42a2a, #a72a2a 20%, #ef0909 40%, #e80f33 50%, #ee0a38 70%, #be9e9e 90%); */
+  /* filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#E2D7D4", endColorstr="#6B77A1",GradientType=0 ); */
+  /* background-size: 200% 200%; */
+  /* animation: movimiento 10s linear infinite alternate; */
+  /* box-sizing: border-box;
   background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-attachment: fixed; */
+  background-color: aqua;
 }
 
+
+@keyframes correctAnswerAnimation {
+  0% {
+    background-color: #28a745;
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes incorrectAnswerAnimation {
+  0% {
+    background-color: #fa0000;
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+.correct-answer {
+  animation: correctAnswerAnimation 1s linear 3;
+  border: 3px solid #28a745;
+}
+
+.incorrect-answer {
+  animation: incorrectAnswerAnimation 1s linear 3;
+  border: 3px solid #a70909;
+}

@@ -12,6 +12,7 @@ import { NewEciQuestComponent } from './new-eci-quest/new-eci-quest.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { SalaComponent } from './sala/sala.component';
 import { CrearSalaComponent } from './crear-sala/crear-sala.component';
+import { UnirSalaComponent } from './unir-sala/unir-sala.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -19,7 +20,8 @@ const routes: Routes = [
   { path: 'new', component: NewEciQuestComponent },
   { path: 'profile', component: PerfilComponent },
   { path: 'SalaComponent', component: SalaComponent },
-  { path: 'CrearSala', component: CrearSalaComponent }
+  { path: 'CrearSala', component: CrearSalaComponent },
+  { path: 'UnirSala', component: UnirSalaComponent }
 ];
 
 @NgModule({
@@ -30,7 +32,8 @@ const routes: Routes = [
     NewEciQuestComponent,
     PerfilComponent,
     SalaComponent,
-    CrearSalaComponent
+    CrearSalaComponent,
+    UnirSalaComponent
   ],
   imports: [
     BrowserModule,

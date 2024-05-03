@@ -1,8 +1,13 @@
 import { Component, ViewChild, ElementRef, ViewEncapsulation, OnInit, AfterViewInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { take } from 'rxjs/operators';
-import { interval } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import { io } from 'socket.io-client';
+import { DataService } from '../comunicacion';
+interface Players3 {
+  playerId: string;
+  score: number;
+}
 
 @Component({
   selector: 'app-sala',
@@ -12,13 +17,13 @@ import { io } from 'socket.io-client';
 })
 export class SalaComponent implements OnInit, AfterViewInit {
   @ViewChild('ruleta') ruletaElementRef!: ElementRef;
-  private socket;
+  
   private spinSound = new Audio('/assets/audio/RULETA.mp3');
   private stopSound = new Audio('/assets/audio/stopWheel.mp3');
   private clock = new Audio('/assets/audio/temporizador.mp3');
   private clockend = new Audio('/assets/audio/temporizadorFin.mp3');
-  constructor(private sanitizer: DomSanitizer)
-              { this.socket = io('http://localhost:4000');}
+  constructor(private sanitizer: DomSanitizer, private data: DataService)
+              { }
   root = document.documentElement
   animacionCarga:any
   sortenado = false
@@ -33,9 +38,12 @@ export class SalaComponent implements OnInit, AfterViewInit {
   repuestaEsperada=""
   opcionseleccionada = ""
   idSala = 0
-  puntaje = 0
+  puntaje:any = 0
   usuarioDb = "prueba"
   passwordDb = "prueba"
+  puedeIniciar = false
+  top3:any = []
+  
 
   colorList = [
     "#126253", // a dark shade of blue
@@ -50,15 +58,63 @@ export class SalaComponent implements OnInit, AfterViewInit {
     "#800000", // maroon
     "#808000", // olive
   ];
-  conceptos = ["bases de datos", "logica", "sistemas","matematicas","programacion"]
+  conceptos:any[] = []
+  private subscription = new Subscription();
   // conceptos = ["bases de datos", "logica"]
 
   ngOnInit() {
+    this.conceptos = this.data.getCategoriest();
+    console.log(this.conceptos, "conceptos")
     this.ajustarRuleta();
-    this.socket.on('realizarSorteo', (data) => {
-      this.sorteo(data.numero);
-  });
-  }
+    this.idSala = this.data.getSalaId();
+    this.data.setSalaBack();
+
+    this.subscription.add(this.data.sorteo$.subscribe(data => {
+      console.log("Sorteo recibido:", data);
+      
+        if (data !== null && data !== undefined ) {
+            console.log("Sorteo recibido:", data);
+            
+            this.sorteo(data);
+            
+        }
+        
+    }));
+
+
+    this.subscription.add(this.data.top3$.subscribe(data => {
+      this.top3 = data;
+      
+     
+        
+    }));
+
+
+    this.subscription.add(this.data.puntaje$.subscribe(data => {
+      
+      this.puntaje = data[0];
+   
+      const selectedLabel = document.querySelector(`.opcionsel.selected`);
+    
+      if (data[1]) {
+        if (selectedLabel) {
+          selectedLabel.classList.add('correct-answer');
+        }
+      } else {
+        if (selectedLabel) {
+          selectedLabel.classList.add('incorrect-answer');
+        }
+      }
+    
+      setTimeout(() => {
+        if (selectedLabel) {
+          selectedLabel.classList.remove('correct-answer');
+          selectedLabel.classList.remove('incorrect-answer');
+        }
+      }, 3000); // 3000 ms = 3 segundos
+    }));
+}
+
 
   validarRespuesta(){
     // if (this.opcionseleccionada == this.repuestaEsperada){
@@ -67,21 +123,33 @@ export class SalaComponent implements OnInit, AfterViewInit {
     //   console.log("!perdiste¡")
     //   alert("!Respuesta incorrecta¡")
     // }
-    this.socket.off('answerResult');
-    this.socket.emit('answer', {roomId: this.idSala, answer:this.opcionseleccionada});
-    this.socket.on('answerResult', (data) => {
-      if (data.isCorrect){
-        console.log("!Respuesta correcta¡")
-        this.puntaje += 10;
-        console.log(this.puntaje);
+    // this.socket.off('answerResult');
+    // this.socket.emit('answer', {roomId: this.idSala, answer:this.opcionseleccionada});
+    // this.socket.on('answerResult', (data) => {
+    //   if (data.isCorrect){
+    //     console.log("!Respuesta correcta¡")
+    //     this.puntaje += 10;
+    //     console.log(this.puntaje);
 
-      }
-      else{
-        console.log("!perdiste¡")
-      }
-      this.puntaje = data.score
+    //   }
+    //   else{
+    //     console.log("!perdiste¡")
+    //   }
+    //   this.puntaje = data.score
 
-          });
+    //       });
+
+    let respuesta= this.data.validarRespuesta(this.opcionseleccionada)
+    console.log(respuesta, "respuesta")
+    if(respuesta){
+      this.puntaje += 10;
+
+
+    }
+    else{ 
+      console.log("!perdiste¡")
+    }
+    
 
 
   }
@@ -93,39 +161,49 @@ export class SalaComponent implements OnInit, AfterViewInit {
     this.areLabelsDisabled = true
   }
 
-  preguntasSeleccion(categoria:string){
-    this.socket.emit('requestQuestions', categoria);
-    this.socket.on('newQuestion', (data) => {
-      this.preguntaGlobal = data.pregunta
-      this.opcionRespuesta = data.respuestas
+  preguntasSeleccion(categoria: string) {
+    this.data.seleccionPregunta(categoria).subscribe({
+        next: (data) => {
+            this.preguntaGlobal = data.pregunta;
+            this.opcionRespuesta = data.respuestas;
+            console.log('Pregunta recibida:', this.preguntaGlobal);
+            console.log('Respuestas recibidas:', this.opcionRespuesta);
+        },
+        error: (err) => console.error('Error al recibir la pregunta:', err)
     });
-  }
-
+}
+  lastRotation: number = 0; 
 
 
   ngAfterViewInit() {
-    let ganadorTexto = document.getElementById("ganadorTexto")
-
+    console.log("AfterViewInit")
     this.ruletaElementRef.nativeElement.addEventListener('animationend', () => {
-      let currentRotation = this.getCurrentRotation(this.ruletaElementRef.nativeElement);
-      this.ruletaElementRef.nativeElement.style.transform = "rotate(" + this.getCurrentRotation(this.ruletaElementRef.nativeElement) + "deg)"
-      console.log(this.getCurrentRotation(this.ruletaElementRef.nativeElement))
-      this.ruletaElementRef.nativeElement.classList.toggle("girar", false)
-      this.sortenado = false
-
-      let winningSegment = this.calculateWinningSegment(currentRotation);
-      if (ganadorTexto) { ganadorTexto.textContent = this.conceptos[winningSegment] }
-      clearInterval(this.animacionCarga)
-      this.spinSound.pause();
-      this.spinSound.currentTime = 0;
-      this.stopSound.play()
-      this.botonActivo = true
-      this.preguntasSeleccion(this.conceptos[winningSegment])
-      this.startCountdown()
-      this.areLabelsDisabled = false
-      this.showformat = true
-
+      // Actualiza lastRotation al finalizar la animación
+      this.lastRotation = this.getCurrentRotation(this.ruletaElementRef.nativeElement);
+      
+      console.log(`Animation ended at rotation: ${this.lastRotation}`);
+      // 
+      
+      this.finishSpinSetup();
     });
+  }
+
+  finishSpinSetup() {
+    const ganadorTexto = document.getElementById("ganadorTexto");
+    const winningSegment = this.calculateWinningSegment(this.lastRotation);
+    if (ganadorTexto) {
+      ganadorTexto.textContent = this.conceptos[winningSegment];
+    }
+    clearInterval(this.animacionCarga);
+    this.spinSound.pause();
+    this.spinSound.currentTime = 0;
+    this.stopSound.play();
+    this.botonActivo = true;
+    this.preguntasSeleccion(this.conceptos[winningSegment]);
+    this.startCountdown();
+    this.areLabelsDisabled = false;
+    this.showformat = true;
+    
   }
 
   startCountdown() {
@@ -152,6 +230,7 @@ export class SalaComponent implements OnInit, AfterViewInit {
     if (this.countdownSubscription) {
       this.countdownSubscription.unsubscribe(); // Stop the countdown
     }
+    this.ruletaElementRef.nativeElement.classList.remove("girar");
   }
   calculateWinningSegment(rotation: number) {
     let degreesPerSegment = 360 / this.conceptos.length;
@@ -236,42 +315,34 @@ export class SalaComponent implements OnInit, AfterViewInit {
     return probabilidad * 360 / 100;
   }
 
-  sorteo(ganador:any) {
+  sorteo(ganador: any) {
+    
     this.spinSound.play();
     this.selectedOption = -1;
-    this.showformat = false
-    this.botonActivo = false
-    if (this.sortenado) { return }
-    let ganadorTexto = document.getElementById("ganadorTexto")
-    if (ganadorTexto) { ganadorTexto.textContent = "." }
-    this.sortenado = true
+    this.showformat = false;
+    this.botonActivo = false;
+    // if (this.sortenado) { return; }
+
+    this.sortenado = true;
+
+    let ganadorTexto = document.getElementById("ganadorTexto");
+    if (ganadorTexto) {
+        ganadorTexto.textContent = ".";
+    }
+    console.log("Ganador: ", ganador);
+    let duracionGiro = 10 * 360 + (1 - ganador) * 360;  
+    this.root.style.setProperty("--giroRuleta", `${duracionGiro}deg`);
+
+    let ruleta = this.ruletaElementRef.nativeElement;
+    ruleta.classList.add("girar");
+
     this.animacionCarga = setInterval(() => {
-      if (ganadorTexto) {
-        switch (ganadorTexto.textContent) {
-          case ".":
-            ganadorTexto.textContent = ".."
-            break
-          case "..":
-            ganadorTexto.textContent = "..."
-            break
-          case "...":
-            ganadorTexto.textContent = "."
-            break
-          default:
-            ganadorTexto.textContent = "."
-            break
-
-        }
+      if (ganadorTexto?.textContent) {
+        ganadorTexto.textContent = ganadorTexto.textContent.length < 3 ? ganadorTexto.textContent + "." : ".";
       }
+    }, 500);
+}
 
-    }, 500)
-    let ruleta = document.getElementById("ruleta")
-
-    ruleta?.classList.toggle("girar", true)
-    let duracionGiro = 10 * 360 + (1 - ganador) * 360
-    this.root.style.setProperty("--giroRuleta", duracionGiro + "deg")
-
-  }
 
   getCurrentRotation(el: any) {
     var st = window.getComputedStyle(el, null);
@@ -291,17 +362,21 @@ export class SalaComponent implements OnInit, AfterViewInit {
     return 0;
   }
 
+//   ngOnDestroy() {
+//     this.subscription.unsubscribe();
+// }
 
 
   connectToGame() {
-
-    this.socket.emit('iniciarSorteo', { roomId: this.idSala });
+    this.data.connectToGame()
+    this.data.reset()
 
 
   }
 
   ingresarSala(){
-    this.socket.emit('joinRoom', { roomId: this.idSala });
+    
+    this.data.setSalaBack()
   }
 
 

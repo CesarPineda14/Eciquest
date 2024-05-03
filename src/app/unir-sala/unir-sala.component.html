@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unir Sala</title>
+    <!-- <link rel="stylesheet" type="text/css" href="inicio.component.css" /> -->
+</head>
+ <body>
+    <div class="container">
+        <h1>Unir Sala</h1>
+        <form>
+            <div class="form-group">
+                <label for="codigoSala">Código de la sala</label>
+                <input type="text" class="form-control" id="codigoSala" name="codigoSala" placeholder="Código de la sala" [(ngModel)]="codigoSala">
+            </div>
+            <button type="submit" class="btn btn-primary" (click)="sendData()" >Unir sala</button>
+        </form>
+    </div>
+</body>
+</html>

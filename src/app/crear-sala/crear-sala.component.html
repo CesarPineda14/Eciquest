@@ -8,7 +8,31 @@
 </head>
 <body>
     <div class="container">
-
+        <h1>Crear sala</h1>
+        <form>
+            <div class="form-group">
+                <label for="categoria">Categoría</label>
+                <div id="categoria">
+                    <button type="button" class="btn" 
+                        [ngClass]="{
+                            'btn-secondary': !selectedCategories.includes(category.value), 
+                            'btn-primary': selectedCategories.includes(category.value)}"
+                        *ngFor="let category of categories" 
+                        (click)="toggleCategory(category.value)">
+                        {{ category.name }}
+                    </button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="numPreguntas">Numero de preguntas</label>
+                <input type="number" class="form-control" id="numPreguntas" name="numPreguntas" placeholder="Numero de preguntas" [(ngModel)]="NumPreguntas">
+            </div>
+            <div class="form-group">
+                <label for="numJugadores">Numero de jugadores</label>
+                <input type="number" class="form-control" id="numJugadores" name="numJugadores" placeholder="Numero de jugadores" [(ngModel)]="numJugadores">
+            </div>
+            <button type="submit" class="btn btn-primary" (click)="sendData()" >Crear sala</button>
+        </form>
     </div>
 </body>
 </html>
