@@ -4,7 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear sala</title>
-    <!-- <link rel="stylesheet" type="text/css" href="inicio.component.css" /> -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            margin-top: 20px;
+        }
+        #categoria button {
+            margin: 5px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -12,7 +20,7 @@
         <form>
             <div class="form-group">
                 <label for="categoria">Categoría</label>
-                <div id="categoria">
+                <div id="categoria" class="btn-group">
                     <button type="button" class="btn" 
                         [ngClass]="{
                             'btn-secondary': !selectedCategories.includes(category.value), 
@@ -31,8 +39,9 @@
                 <label for="numJugadores">Numero de jugadores</label>
                 <input type="number" class="form-control" id="numJugadores" name="numJugadores" placeholder="Numero de jugadores" [(ngModel)]="numJugadores">
             </div>
-            <button type="submit" class="btn btn-primary" (click)="sendData()" >Crear sala</button>
+            <button type="submit" class="btn btn-primary" (click)="sendData()">Crear sala</button>
         </form>
     </div>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

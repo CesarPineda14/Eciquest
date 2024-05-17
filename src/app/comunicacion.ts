@@ -17,11 +17,15 @@ interface JoinRoomResponse {
 export class DataService {
     private socket;
     private sorteoSource = new BehaviorSubject<number | null>(null);
+    
     private puntajeSource = new BehaviorSubject<any>(null);
     private categoriesSource = new BehaviorSubject<string[]>([]);
+    private overstate = new BehaviorSubject<any>(null);
+
     private top3 = new BehaviorSubject<string[]>([]);
     sorteo$ = this.sorteoSource.asObservable();
     puntaje$ = this.puntajeSource.asObservable();
+    
     top3$ = this.top3.asObservable();
     constructor(private sanitizer: DomSanitizer) {
         this.socket = io('http://localhost:4000');
@@ -32,6 +36,8 @@ export class DataService {
     NumPreguntas: number = 0;
     numJugadores: number = 0;
     salaId: number = 0;
+    nombre = ""
+    
 
 
     setCategories(categories: string[]): void {
@@ -56,11 +62,8 @@ export class DataService {
 
     private initializeListeners(): void {
         this.socket.on('realizarSorteo', (data) => {
-            // Convert data.sala to a string for comparison
             const salaStr = data.sala.toString();
             const salabc = this.salaId.toString();
-
-            // console.log(salaStr === this.salaId, "sala", typeof salaStr, "salaId", typeof this.salaId);
             if (data && data.numero !== undefined && salaStr === salabc) {
                 this.sorteoSource.next(data.numero);
             } else {
@@ -69,7 +72,6 @@ export class DataService {
         });
 
         this.socket.on('answerResult', (data) => {
-            // console.log('puntaje:', data.score);
             let resulta = [data.score, data.isCorrect]
             this.puntajeSource.next(resulta);
 
@@ -86,11 +88,30 @@ export class DataService {
             
             
         });
+
+        this.socket.on('ConCupo', (data) => {
+            
+        });
+
+        this.socket.on('GameOver', (data) => {
+            if (data == this.salaId){
+                this.overstate.next(data)
+            }
+            
+            
+        });
     }
     setNombre(nombre: string): void {
         this.socket.emit('setNombre', nombre);
+        this.nombre = nombre
+    }
+    getOverState(){
+        return this.overstate.asObservable()
     }
 
+    getNombre(){
+        return this.nombre
+    }
 
 
     setNumPreguntas(num: number): void {
@@ -149,8 +170,21 @@ export class DataService {
     getSalaId(): number {
         return this.salaId;
     }
+
+ 
+
+    getOcupacion(): Observable<number> {
+        return new Observable(subscriber => {
+            this.socket.emit('ocupacion', this.salaId);
+            this.socket.on('ocupancy', data => {
+                subscriber.next(data);
+                subscriber.complete();
+                console.log("Datos de ocupación recibidos:", data);
+            });
+        });
+    }
     setSalaBack() {
-        this.socket.emit('joinRoom', { roomId: this.salaId });
+        this.socket.emit('joinRoom', [this.nombre ,this.salaId, this.NumPreguntas, this.numJugadores ]);
     }
 
     // setSalaBack() {

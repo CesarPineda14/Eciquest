@@ -47,7 +47,7 @@
   position: absolute;
   left: -70px;
   top: -40px;
-  background-color: aquamarine;
+  background-color: rgb(245, 233, 233);
   min-height: 55px;
   width: 150px;
   font-weight: bold;
@@ -130,7 +130,7 @@ body{
   /* box-sizing: border-box;
   background-repeat: no-repeat;
   background-attachment: fixed; */
-  background-color: aqua;
+  background-color: rgb(241, 234, 217);
 }
 
 
@@ -169,3 +169,6 @@ body{
   animation: incorrectAnswerAnimation 1s linear 3;
   border: 3px solid #a70909;
 }
+
+
+

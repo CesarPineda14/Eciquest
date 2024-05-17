@@ -43,6 +43,7 @@ export class SalaComponent implements OnInit, AfterViewInit {
   passwordDb = "prueba"
   puedeIniciar = false
   top3:any = []
+  userName=""
   
 
   colorList = [
@@ -63,6 +64,7 @@ export class SalaComponent implements OnInit, AfterViewInit {
   // conceptos = ["bases de datos", "logica"]
 
   ngOnInit() {
+    this.userName = this.data.getNombre()
     this.conceptos = this.data.getCategoriest();
     console.log(this.conceptos, "conceptos")
     this.ajustarRuleta();
@@ -89,6 +91,8 @@ export class SalaComponent implements OnInit, AfterViewInit {
         
     }));
 
+    
+
 
     this.subscription.add(this.data.puntaje$.subscribe(data => {
       
@@ -105,6 +109,11 @@ export class SalaComponent implements OnInit, AfterViewInit {
           selectedLabel.classList.add('incorrect-answer');
         }
       }
+
+    //   this.data.getOverState().subscribe((overState) => {
+    //     console.log("Datos de overstate recibidos:", overState);
+    //     alert("fin del juego");
+    // });
     
       setTimeout(() => {
         if (selectedLabel) {

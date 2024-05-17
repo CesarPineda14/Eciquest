@@ -27,18 +27,31 @@ export class UnirSalaComponent implements OnInit{
     }
   
     sendData(): void {
+      let ocupacion = 0
       this.data.setSalaId(this.codigoSala);
       // this.data.setSalaBack()
-      this.data.getCategories().subscribe(categorias => {
-        console.log(categorias, "categorias");
-        
-        let pregunta = this.data.getNumPreguntas();
-        let jugadores = this.data.getNumJugadores();
-        this.data.setNumPreguntas(pregunta);
-        this.data.setNumJugadores(jugadores);
-        this.data.setCategories(categorias);
-        this.router.navigate(['/SalaComponent']);
-      });
+
+      this.data.getOcupacion().subscribe(ocupa => {
+        ocupacion = ocupa
+        console.log(ocupacion)
+        if(ocupacion){
+          this.data.getCategories().subscribe(categorias => {
+      console.log(categorias, "categorias");
+      
+      let pregunta = this.data.getNumPreguntas();
+      let jugadores = this.data.getNumJugadores();
+      this.data.setNumPreguntas(pregunta);
+      this.data.setNumJugadores(jugadores);
+      this.data.setCategories(categorias);
+      this.router.navigate(['/SalaComponent']);
+    });
+  }
+  else{
+    alert("sala llena")
+  }
+    });
+
+
     }
 
 }

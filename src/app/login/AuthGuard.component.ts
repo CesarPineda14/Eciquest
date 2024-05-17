@@ -1,21 +1,22 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import { AuthService } from './AuthService.component';
+import { MsalService } from '@azure/msal-angular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: MsalService, private router: Router) {}
 
   canActivate(): boolean {
-    if (this.authService.isAuthenticatedUser()) {
-      return true; // Permite el acceso si el usuario está autenticado
+    const account = this.authService.instance.getAllAccounts()[0];
+    if (account) {
+      console.log("account:",account)
+      return true;
+      
     } else {
-      this.router.navigateByUrl('/login'); // Redirige al login si el usuario no está autenticado
+      this.router.navigate(['/login']);
       return false;
     }
   }
 }
-
-

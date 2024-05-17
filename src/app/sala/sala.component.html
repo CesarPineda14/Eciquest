@@ -3,10 +3,13 @@
   <label for="sala">Número de Sala:</label>
   <span  type="text" id="sala"> {{idSala}}</span>
   <br>
-
+  <label for="sala">Nombre usuario:</label>
+  <span  type="text" id="sala"> {{userName}}</span>
+  
+<br>
   <!-- Puntaje -->
   <label for="puntaje">Puntaje:</label>
-  <span id="puntaje">{{ puntaje }}</span>
+  <span type="text" id="puntaje">{{ puntaje }}</span>
 </div>
 
 <div class="boton-sorteo">
@@ -61,7 +64,7 @@
     </label><br>
   </div>
 
-  <div>
+  <div *ngIf="top3.length > 0">
     <h1>Top 3</h1>
     <div id="top3">
       <div *ngFor="let jugador of top3">

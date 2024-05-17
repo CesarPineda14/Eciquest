@@ -27,7 +27,7 @@ export class PerfilComponent implements OnInit {
   constructor(private authService: AuthService, private userService: UserService) { }
 
   ngOnInit(): void {
-    this.currentUser = this.authService.getCurrentUser();
+    // this.currentUser = this.authService.getCurrentUser();
   }
 
   selectImage(imageUrl: string): void {
@@ -37,7 +37,7 @@ export class PerfilComponent implements OnInit {
 
   saveProfile(): void {
     // Llama al método del servicio para actualizar el perfil del usuario
-    this.authService.updateUserProfile(this.currentUser);
+    // this.authService.updateUserProfile(this.currentUser);
     // Puedes redirigir a otra página después de guardar los cambios si es necesario
     // this.router.navigate(['/inicio']);
   }
