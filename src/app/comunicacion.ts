@@ -95,6 +95,7 @@ export class DataService {
 
         this.socket.on('GameOver', (data) => {
             if (data == this.salaId){
+                console.log("se supone que escucha")
                 this.overstate.next(data)
             }
             

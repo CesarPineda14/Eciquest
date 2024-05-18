@@ -15,6 +15,9 @@ import { CrearSalaComponent } from './crear-sala/crear-sala.component';
 import { UnirSalaComponent } from './unir-sala/unir-sala.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { GameOverDialogComponent } from './game-over-dialog/game-over-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 // export function MSALInstanceFactory(): PublicClientApplication {
 //   return new PublicClientApplication({
@@ -47,7 +50,8 @@ const routes: Routes = [
     PerfilComponent,
     SalaComponent,
     CrearSalaComponent,
-    UnirSalaComponent
+    UnirSalaComponent,
+    GameOverDialogComponent
   ],
   imports: [
     MsalModule.forRoot(new PublicClientApplication(
@@ -79,9 +83,11 @@ const routes: Routes = [
   }),
     BrowserModule,
     FormsModule,
+    MatDialogModule,
     HttpClientModule,
     AppRoutingModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    BrowserAnimationsModule
   ],
   providers: [
     {

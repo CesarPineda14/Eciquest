@@ -2,8 +2,10 @@ import { Component, ViewChild, ElementRef, ViewEncapsulation, OnInit, AfterViewI
 import { DomSanitizer } from '@angular/platform-browser';
 import { take } from 'rxjs/operators';
 import { interval, Subscription } from 'rxjs';
-import { io } from 'socket.io-client';
+
 import { DataService } from '../comunicacion';
+import { MatDialog } from '@angular/material/dialog';
+import { GameOverDialogComponent } from '../game-over-dialog/game-over-dialog.component';
 interface Players3 {
   playerId: string;
   score: number;
@@ -22,7 +24,7 @@ export class SalaComponent implements OnInit, AfterViewInit {
   private stopSound = new Audio('/assets/audio/stopWheel.mp3');
   private clock = new Audio('/assets/audio/temporizador.mp3');
   private clockend = new Audio('/assets/audio/temporizadorFin.mp3');
-  constructor(private sanitizer: DomSanitizer, private data: DataService)
+  constructor(private sanitizer: DomSanitizer, private data: DataService, public dialog: MatDialog)
               { }
   root = document.documentElement
   animacionCarga:any
@@ -110,10 +112,13 @@ export class SalaComponent implements OnInit, AfterViewInit {
         }
       }
 
-    //   this.data.getOverState().subscribe((overState) => {
-    //     console.log("Datos de overstate recibidos:", overState);
-    //     alert("fin del juego");
-    // });
+      this.data.getOverState().subscribe((overState) => {
+        console.log("Datos de overstate recibidos:", overState);
+        if(overState){
+          this.openGameOverDialog();
+        }
+        
+    });
     
       setTimeout(() => {
         if (selectedLabel) {
@@ -124,6 +129,14 @@ export class SalaComponent implements OnInit, AfterViewInit {
     }));
 }
 
+
+openGameOverDialog(): void {
+  this.dialog.open(GameOverDialogComponent, {
+    width: '400px',
+    height: '200px',
+    position: { top: '30px' }
+  });
+}
 
   validarRespuesta(){
     // if (this.opcionseleccionada == this.repuestaEsperada){
