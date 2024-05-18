@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
     const request: PopupRequest = {
       scopes: ["user.read"],
       prompt: "select_account",
-      redirectUri: 'http://localhost:4200',  
+      redirectUri: 'https://eciquestv3.azurewebsites.net',  
       authority: 'https://login.microsoftonline.com/46def668-48dd-404a-8d73-43fc6a155b04',  
     };
 

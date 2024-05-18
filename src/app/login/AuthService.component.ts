@@ -27,7 +27,7 @@ export class AuthService {
   }
   logout(): void {
     const logoutUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/logout';
-    const postLogoutRedirectUri = encodeURIComponent('http://localhost:4200');
+    const postLogoutRedirectUri = encodeURIComponent('https://eciquestv3.azurewebsites.net');
     const fullLogoutUrl = `${logoutUrl}?post_logout_redirect_uri=${postLogoutRedirectUri}`;
     window.location.href = fullLogoutUrl;
     localStorage.clear();

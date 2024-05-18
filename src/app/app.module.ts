@@ -59,7 +59,7 @@ const routes: Routes = [
       auth: {
         clientId: "933b58cd-d2c8-4c61-b229-f95d28c0bf40",
         authority: "https://login.microsoftonline.com/46def668-48dd-404a-8d73-43fc6a155b04",
-        redirectUri: "http://localhost:4200",
+        redirectUri: "https://eciquestv3.azurewebsites.net",
       },
       cache: {
         cacheLocation: BrowserCacheLocation.LocalStorage,
@@ -78,7 +78,7 @@ const routes: Routes = [
       protectedResourceMap: new Map([
           ['https://graph.microsoft.com/v1.0/me', ['user.read']],
           ['https://api.myapplication.com/users/*', ['customscope.read']],
-          ['http://localhost:4200/about/', null] 
+          
       ])
   }),
     BrowserModule,

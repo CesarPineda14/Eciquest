@@ -28,7 +28,7 @@ export class DataService {
     
     top3$ = this.top3.asObservable();
     constructor(private sanitizer: DomSanitizer) {
-        this.socket = io('http://localhost:4000');
+        this.socket = io('http://ec2-54-145-181-197.compute-1.amazonaws.com:4000');
         this.initializeListeners();
         this.listenForCategories();
     }
